@@ -94,8 +94,23 @@ class GeneticAlgorithm:
         return generation
 
     def crossover(self, parent1, parent2):
-        pass
-        # return (child1, child2)
+        n = self.reproduction_size
+        child1 = Chromosome(np.zeros((n,n)),0)
+        child2 = Chromosome(np.zeros((n,n)),0)
+        
+        for i in range(n):
+            for j in range(n):
+                if((i<n/2 and j<n/2) or (i>n/2 and j>n/2)):
+                    child1.matrix[i][j] = parent1.matrix[i][j]
+                    child2.matrix[i][j] = parent2.matrix[i][j]
+                else:
+                    child1.matrix[i][j] = parent2.matrix[i][j]
+                    child2.matrix[i][j] = parent1.matrix[i][j]
+        
+        child1.fitness = self.calculate_fitness(child1.matrix)
+        child2.fitness = self.calculate_fitness(child2.matrix)
+
+        return (child1, child2)
 
     def optimize(self):
         population = self.initial_population()
