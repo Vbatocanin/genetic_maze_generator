@@ -45,9 +45,13 @@ class GeneticAlgorithm:
 
     def selection(self, chromosomes):
         selected = []
-
-        # TODO
-
+        
+        for _ in range(self.reproduction_size):
+            if self.selection_type == 'tournament':
+                selected.append(tournament_selection(chromosomes))
+            elif self.selection_type == 'roulette':
+                selected.append(roulette_selection(chromosomes))
+        
         return selected
 
     def roulette_selection(self, chromosomes):
@@ -70,7 +74,16 @@ class GeneticAlgorithm:
         return winner
 
     def mutate(self, genetic_code):
-        pass
+        random_value = random.random()
+        
+        if random_value < self.mutation_rate:
+            
+            random_i = random.randrange(self.chromosome_size)
+            random_j = random.randrage(self.chromosome_size)
+            
+            genetic_code[random_i][random_j] = np.random.rand()
+            
+        return genetic_code
 
     def create_generation(self, chromosomes):
         generation = []
@@ -123,7 +136,7 @@ class GeneticAlgorithm:
 
             global_best_chromosome = max(population, key=lambda x: x.fitness)
 
-            # print(global_best_chromosome)
+            print(global_best_chromosome)
 
             if global_best_chromosome.fitness == self.chromosome_size:
                 break
