@@ -1,83 +1,148 @@
 import numpy as np
 import GenAlg
 import random
+from enum import Enum
+
+
+class Direction(Enum):
+    UP = 0
+    DOWN = 1
+    LEFT = 2
+    RIGHT = 3
+    NO_DIRECTION = 4
+
 
 class Cell:
-    def __init__(self):
-
+    def __init__(self, x, y, prob):
         # Indicators if a wall exists in a certain direction
-        self.left = False
-        self.right = False
-        self.up = False
-        self.down = False
+        self.x = x
+        self.y = y
+        self.parent = None
+        self.paths = []
 
         self.visited = False
 
-class Maze:
-    def __init__(self,matrix):
+    def setVisited(self,val):
+        self.visited = val
 
-        self.maze = []
+
+class Maze:
+    def __init__(self, probMatrix):
+
+        # Generation of maze exit and entrance
+        finishX = random.randint(0, len(probMatrix[0]) - 1)
+        finishY = random.randint(0, len(probMatrix) - 1)
+
+        startX = random.randint(0, len(probMatrix[0]) - 1)
+        startY = random.randint(0, len(probMatrix) - 1)
+
+        self.cellMaze = []
         self.cells = []
-        self.rowNo = len(matrix)
-        self.colNo = len(matrix[0])
+        self.rowNo = len(probMatrix)
+        self.colNo = len(probMatrix[0])
 
         # Initialization of complete maze
         for i in range(0, self.rowNo):
-            self.maze.append([])
-            for j in range(0,self.colNo):
-                self.maze[i].append(Cell())
+            self.cellMaze.append([])
+            for j in range(0, self.colNo):
+                self.cellMaze[i].append(Cell(i, j, probMatrix[i][j]))
 
-        self.generateMaze(matrix)
+        self.startCell = self.getCell(startX, startY)
+        self.finishCell = self.getCell(finishX, finishY)
+        self.generateMaze(probMatrix)
 
-    def getCell(self,i,j):
-        return self.maze[i][j]
+    def getCell(self, x, y):
+        return self.cellMaze[x][y]
 
-    def isVisited(self,i,j):
-        return self.maze[i][j].visited
+    def isVisited(self, i, j):
+        return self.cellMaze[i][j].visited
 
-    def generateMaze(self,matrix):
+    def makePath(self, parentX, parentY, childX, childY):
+        child = self.getCell(childX, childY)
+        parent = self.getCell(parentX, parentY)
+        child.parent = parent
+        child.setVisited(True)
+        parent.paths.append(child)
+
+
+    def generateMaze(self, probMatrix):
         # Generation of maze entrance
-        self.startY = random.randint(0,len(matrix)-1)
-        self.startX = random.randint(0, len(matrix[0])-1)
-
-        # Generation of maze exit
-        self.finishY = random.randint(0, len(matrix) - 1)
-        self.finishX = random.randint(0, len(matrix[0]) - 1)
+        print(len(probMatrix) - 1)
+        print(len(probMatrix[0]) - 1)
 
         # Initialization of current position
-        curX = self.startX
-        curY = self.startY
+        curCell = self.startCell
 
         # Number of Cells not yet visited
-        noNotVisited = len(matrix)*len(matrix[0])
+        noNotVisited = len(probMatrix) * len(probMatrix[0])
 
+        # List of contenders that are not initially optimal but will be chosen after the fact
+        # when the current cell is cornered
+        globalContenders = []
 
-        while(noNotVisited>0):
+        while noNotVisited > 0:
 
-            contenders = []
-            if (curX!=0):
-                if (self.isVisited(curX-1,curY)):
-                    contenders.append([curX-1,curY])
-            if (curX!=self.colNo-1):
-                if (self.isVisited(curX+1,curY)):
-                    contenders.append([curX+1,curY])
-            if (curY!=0):
-                if (self.isVisited(curX,curY-1)):
-                    contenders.append([curX,curY-1])
-            if (curX!=self.rowNo-1):
-                if (self.isVisited(curX,curY+1)):
-                    contenders.append([curX,curY+1])
+            localContenders = []
 
-            bestContender = contenders[0]
-            nextIsChosen = False
-            while(not nextIsChosen):
-                for contender in contenders:
-                    if( matrix[ contender[0],contender[1] ] > matrix[ bestContender[0],bestContender[1] ] ):
-                        bestContender = contender
+            if (curCell.x != 0) and not self.isVisited(curCell.x - 1, curCell.y):
+                localContenders.append(self.getCell(curCell.x - 1, curCell.y))
+                self.makePath(curCell.x, curCell.y, curCell.x - 1, curCell.y)
+
+            if (curCell.x != self.colNo - 1) and not self.isVisited(curCell.x + 1, curCell.y):
+                localContenders.append(self.getCell(curCell.x + 1, curCell.y))
+                self.makePath(curCell.x, curCell.y, curCell.x + 1, curCell.y)
+
+            if (curCell.y != 0) and not self.isVisited(curCell.x, curCell.y - 1):
+                localContenders.append(self.getCell(curCell.x, curCell.y - 1))
+                self.makePath(curCell.x, curCell.y, curCell.x, curCell.y - 1)
+
+            if (curCell.y != self.rowNo - 1) and not self.isVisited(curCell.x, curCell.y + 1):
+                localContenders.append(self.getCell(curCell.x, curCell.y + 1))
+                self.makePath(curCell.x, curCell.y, curCell.x, curCell.y + 1)
+
+            if localContenders == []:
+                if globalContenders == []:
+                    return
+                localBestContender = globalContenders[0]
+                for contender in globalContenders:
+                    if probMatrix[contender.x][contender.y] > probMatrix[localBestContender.x][localBestContender.y]:
+                        localBestContender = contender
+                globalContenders.remove(localBestContender)
+                nextIsChosen = True
+            else:
+                localBestContender = localContenders[0]
+                nextIsChosen = False
+
+            while not nextIsChosen:
+                for contender in localContenders:
+                    #print(contender.x, contender.y, "vs", localBestContender.x, localBestContender.y)
+                    #print("----------------------")
+                    if (probMatrix[localBestContender.x][localBestContender.y] < probMatrix[contender.x][contender.y]):
+                        localBestContender = contender
                 r = random.random()
-                if(r < matrix[ bestContender[0],bestContender[1] ]):
+                if (r < probMatrix[localBestContender.x][localBestContender.y]):
                     nextIsChosen = True
                 else:
-                    contenders.remove(bestContender)
-            # bestContender
+                    try:
+                        localContenders.remove(localBestContender)
+                    except ValueError:
+                        pass
 
+            # Adds the unused Cells to the global list
+            if localContenders:
+                globalContenders.extend(localContenders)
+
+            # Mark the chosen best contender as visited
+
+            curCell = localBestContender
+            print("Cur x,y :",localBestContender.x,",",localBestContender.y)
+
+
+
+def main():
+    probMatrixExample = [[0.4, 0.1, 0.2], [0.6, 0.2, 0.26], [0.42, 0.31, 0.52]]
+    mazeExample = Maze(probMatrixExample)
+
+
+if __name__ == "__main__":
+    main()
