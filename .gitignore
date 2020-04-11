@@ -5,3 +5,6 @@
 .idea/misc.xml
 .idea/modules.xml
 .idea/vcs.xml
+__pycache__/MazeHierarchy.cpython-37.pyc
+__pycache__/GenAlg.cpython-37.pyc
+.idea/other.xml

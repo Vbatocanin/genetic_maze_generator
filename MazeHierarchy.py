@@ -33,11 +33,11 @@ class Maze:
         self.nCols = len(probMatrix[0])
         self.nRows = len(probMatrix)
 
-        [finishX, finishY] = self.generateEdge(self.nCols, self.nRows)
-        [startX, startY] = self.generateEdge(self.nCols, self.nRows)
+        [self.finishX, self.finishY] = self.generateEdge(self.nCols, self.nRows)
+        [self.startX, self.startY] = self.generateEdge(self.nCols, self.nRows)
 
-        while [finishX, finishY] == [startX, startY]:
-            [startX, startY] = self.generateEdge(self.nCols, self.nRows)
+        while [self.finishX, self.finishY] == [self.startX, self.startY]:
+            [self.startX, self.startY] = self.generateEdge(self.nCols, self.nRows)
 
         self.cellMaze = []
         self.cells = []
@@ -48,10 +48,10 @@ class Maze:
         for i in range(0, self.rowNo):
             self.cellMaze.append([])
             for j in range(0, self.colNo):
-                self.cellMaze[i].append(Cell(j, i, probMatrix[i][j]))
+                self.cellMaze[i].append(Cell(j, i))
 
-        self.startCell = self.getCell(startX, startY)
-        self.finishCell = self.getCell(finishX, finishY)
+        self.startCell = self.getCell(self.startX, self.startY)
+        self.finishCell = self.getCell(self.finishX, self.finishY)
         self.generateMaze(probMatrix)
 
     def generateEdge(self, nCols, nRows):
@@ -80,6 +80,24 @@ class Maze:
                     stringMatrix[i].append('@')
                 else:
                     stringMatrix[i].append(' ')
+
+        if self.startX == 0:
+            stringMatrix[self.startY * 2 + 1][self.startX * 2] = ' '
+        elif self.startY == 0:
+            stringMatrix[self.startY * 2][self.startX * 2 + 1] = ' '
+        if self.startX == self.nCols - 1:
+            stringMatrix[self.startY * 2 + 1][self.startX * 2 + 2] = ' '
+        elif self.startY == self.nRows - 1:
+            stringMatrix[self.startY * 2 + 2][self.startX * 2 + 1] = ' '
+
+        if self.finishX == 0:
+            stringMatrix[self.finishY * 2 + 1][self.finishX * 2] = ' '
+        elif self.finishY == 0:
+            stringMatrix[self.finishY * 2][self.finishX * 2 + 1] = ' '
+        if self.finishX == self.nCols - 1:
+            stringMatrix[self.finishY * 2 + 1][self.finishX * 2 + 2] = ' '
+        elif self.finishY == self.nRows - 1:
+            stringMatrix[self.finishY * 2 + 2][self.finishX * 2 + 1] = ' '
 
         for row in self.cellMaze:
             for cell in row:
@@ -115,10 +133,10 @@ class Maze:
         return Direction.NO_DIRECTION
 
     def getCell(self, x, y):
-        return self.cellMaze[x][y]
+        return self.cellMaze[y][x]
 
     def isVisited(self, i, j):
-        return self.cellMaze[i][j].visited
+        return self.cellMaze[j][i].visited
 
     def makePath(self, parentX, parentY, childX, childY):
         child = self.getCell(childX, childY)
@@ -179,10 +197,10 @@ class Maze:
 
             while not nextIsChosen:
                 for contender in localContenders:
-                    if (probMatrix[localBestContender.x][localBestContender.y] < probMatrix[contender.x][contender.y]):
+                    if probMatrix[localBestContender.x][localBestContender.y] < probMatrix[contender.x][contender.y]:
                         localBestContender = contender
                 r = random.random()
-                if (r < probMatrix[localBestContender.x][localBestContender.y]):
+                if r < probMatrix[localBestContender.x][localBestContender.y]:
                     nextIsChosen = True
                 else:
                     try:
