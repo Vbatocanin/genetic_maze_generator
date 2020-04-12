@@ -98,8 +98,10 @@ class GeneticAlgorithm:
             child1_code = self.mutate(child1_code)
             child2_code = self.mutate(child2_code)
 
-            child1 = Chromosome(child1_code, self.calculate_fitness(child1_code))
-            child2 = Chromosome(child2_code, self.calculate_fitness(child2_code))
+            child1 = child1_code
+            child1.fitness = self.calculate_fitness(child1_code)
+            child2 = child2_code
+            child2.fitness = self.calculate_fitness(child2_code)
 
             generation.append(child1)
             generation.append(child2)
@@ -137,7 +139,7 @@ class GeneticAlgorithm:
 
             global_best_chromosome = max(population, key=lambda x: x.fitness)
 
-            print(global_best_chromosome)
+            # print(global_best_chromosome)
 
             if global_best_chromosome.fitness == self.chromosome_size:
                 break
