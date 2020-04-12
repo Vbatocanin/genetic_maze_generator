@@ -169,8 +169,8 @@ class Maze:
 
     def generateMaze(self, probMatrix):
         # Generation of maze entrance
-        print("Maze dimensions:", self.nCols, "x", self.nRows)
-        print("Starting from cell:", self.startCell.x, ",", self.startCell.y)
+        # print("Maze dimensions:", self.nCols, "x", self.nRows)
+        # print("Starting from cell:", self.startCell.x, ",", self.startCell.y)
         # Initialization of current position
         self.startCell.setVisited(True)
         curCell = self.startCell
@@ -186,22 +186,22 @@ class Maze:
 
             if (curCell.x != 0) and not self.isVisited(curCell.x - 1, curCell.y):
                 localContenders.append(self.getCell(curCell.x - 1, curCell.y))
-                print("Making path from:", curCell.x, curCell.y, " To:", curCell.x - 1, curCell.y)
+                # print("Making path from:", curCell.x, curCell.y, " To:", curCell.x - 1, curCell.y)
                 self.makePath(curCell.x, curCell.y, curCell.x - 1, curCell.y)
 
             if (curCell.x != self.nCols - 1) and not self.isVisited(curCell.x + 1, curCell.y):
                 localContenders.append(self.getCell(curCell.x + 1, curCell.y))
-                print("Making path from:", curCell.x, curCell.y, " To:", curCell.x + 1, curCell.y)
+                # print("Making path from:", curCell.x, curCell.y, " To:", curCell.x + 1, curCell.y)
                 self.makePath(curCell.x, curCell.y, curCell.x + 1, curCell.y)
 
             if (curCell.y != 0) and not self.isVisited(curCell.x, curCell.y - 1):
                 localContenders.append(self.getCell(curCell.x, curCell.y - 1))
-                print("Making path from:", curCell.x, curCell.y, " To:", curCell.x, curCell.y - 1)
+                # print("Making path from:", curCell.x, curCell.y, " To:", curCell.x, curCell.y - 1)
                 self.makePath(curCell.x, curCell.y, curCell.x, curCell.y - 1)
 
             if (curCell.y != self.nRows - 1) and not self.isVisited(curCell.x, curCell.y + 1):
                 localContenders.append(self.getCell(curCell.x, curCell.y + 1))
-                print("Making path from:", curCell.x, curCell.y, " To:", curCell.x, curCell.y + 1)
+                # print("Making path from:", curCell.x, curCell.y, " To:", curCell.x, curCell.y + 1)
                 self.makePath(curCell.x, curCell.y, curCell.x, curCell.y + 1)
 
             # In case there weren't any new Cells, return, because the maze is done
@@ -243,7 +243,7 @@ class Maze:
             # Mark the chosen best contender as visited
             curCell = localBestContender
             curCell.setVisited(True)
-            print("Cur x,y :", localBestContender.x, ",", localBestContender.y)
+            # print("Cur x,y :", localBestContender.x, ",", localBestContender.y)
 
 
 def main():

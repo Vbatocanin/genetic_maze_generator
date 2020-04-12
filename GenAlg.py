@@ -37,7 +37,8 @@ class GeneticAlgorithm:
     def initial_population(self):
         init_population = []
 
-        for _ in self.generation_size:
+        for _ in range(self.generation_size):
+            n = self.chromosome_size
             matrix = np.random.rand(n, n)
             init_population.append(Chromosome(matrix, self.calculate_fitness(matrix)))
 
@@ -48,9 +49,9 @@ class GeneticAlgorithm:
         
         for _ in range(self.reproduction_size):
             if self.selection_type == 'tournament':
-                selected.append(tournament_selection(chromosomes))
+                selected.append(self.tournament_selection(chromosomes))
             elif self.selection_type == 'roulette':
-                selected.append(roulette_selection(chromosomes))
+                selected.append(self.roulette_selection(chromosomes))
         
         return selected
 
@@ -79,9 +80,9 @@ class GeneticAlgorithm:
         if random_value < self.mutation_rate:
             
             random_i = random.randrange(self.chromosome_size)
-            random_j = random.randrage(self.chromosome_size)
+            random_j = random.randrange(self.chromosome_size)
             
-            genetic_code[random_i][random_j] = np.random.rand()
+            genetic_code.matrix[random_i][random_j] = np.random.rand()
             
         return genetic_code
 
@@ -108,18 +109,18 @@ class GeneticAlgorithm:
         return generation
 
     def crossover(self, parent1, parent2):
-        n = self.reproduction_size
-        child1 = Chromosome(np.zeros((n,n)),0)
-        child2 = Chromosome(np.zeros((n,n)),0)
+        n = self.chromosome_size
+        child1 = Chromosome(np.zeros((n, n)), 0)
+        child2 = Chromosome(np.zeros((n, n)), 0)
         
         for i in range(n):
             for j in range(n):
-                if((i<n/2 and j<n/2) or (i>n/2 and j>n/2)):
-                    child1.matrix[i][j] = parent1.matrix[i][j]
-                    child2.matrix[i][j] = parent2.matrix[i][j]
+                if (i < n/2 and j < n/2) or (i > n/2 and j > n/2):
+                    child1.matrix[i, j] = parent1.matrix[i, j]
+                    child2.matrix[i, j] = parent2.matrix[i, j]
                 else:
-                    child1.matrix[i][j] = parent2.matrix[i][j]
-                    child2.matrix[i][j] = parent1.matrix[i][j]
+                    child1.matrix[i, j] = parent2.matrix[i, j]
+                    child2.matrix[i, j] = parent1.matrix[i, j]
         
         child1.fitness = self.calculate_fitness(child1.matrix)
         child2.fitness = self.calculate_fitness(child2.matrix)
@@ -142,3 +143,13 @@ class GeneticAlgorithm:
                 break
 
         return global_best_chromosome
+
+
+def main():
+    genetic_algorithm = GeneticAlgorithm(5)
+    result = genetic_algorithm.optimize()
+    print('Result: {}'.format(result))
+
+
+if __name__ == "__main__":
+    main()
