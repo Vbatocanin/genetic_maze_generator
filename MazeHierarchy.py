@@ -10,6 +10,8 @@ class Direction(Enum):
     LEFT = 2
     RIGHT = 3
     NO_DIRECTION = 4
+    def opposite_direction(self):
+        pass
 
 
 class Cell:
@@ -45,7 +47,7 @@ class Maze:
         while [self.exitX, self.exitY] == [self.startX, self.startY]:
             [self.startX, self.startY] = self.generateEdge(self.nCols, self.nRows)
 
-        # cellMaze is a list of lists which containt Cell objects in the same order as the prob matrix
+        # cellMaze is a list of lists which contains Cell objects in the same order as the prob matrix
         self.cellMaze = []
 
         # Initialization of complete maze
@@ -57,6 +59,10 @@ class Maze:
         self.startCell = self.getCell(self.startX, self.startY)
         self.finishCell = self.getCell(self.exitX, self.exitY)
         self.generateMaze(probMatrix)
+
+        for row in self.cellMaze:
+            for cell in row:
+                cell.setVisited(False)
 
     # Generates the coordiantes for an edge Cell, which is only used for the start and finish cells
     def generateEdge(self, nCols, nRows):
@@ -77,6 +83,7 @@ class Maze:
                 return [random.randint(0, nCols - 1), nRows - 1]
             else:
                 return [random.randint(0, nCols - 1), 0]
+
 
     def __str__(self):
 
@@ -135,7 +142,8 @@ class Maze:
 
     # A function that return the direction in which you need to go
     # in order to go from fromCell to toCell
-    def getDirection(self, fromCell, toCell):
+    @staticmethod
+    def getDirection(fromCell, toCell):
         diffx = toCell.x - fromCell.x
         diffy = toCell.y - fromCell.y
 
@@ -150,6 +158,19 @@ class Maze:
             if diffy == -1:
                 return Direction.UP
         return Direction.NO_DIRECTION
+
+    @staticmethod
+    def isDirectionOpposite(dir1, dir2):
+        if dir1 == Direction.UP and dir2 == Direction.DOWN:
+            return True
+        elif dir1 == Direction.DOWN and dir2 == Direction.UP:
+            return True
+        elif dir1 == Direction.LEFT and dir2 == Direction.RIGHT:
+            return True
+        elif dir1 == Direction.RIGHT and dir2 == Direction.LEFT:
+            return True
+        else:
+            return False
 
     def getCell(self, x, y):
         return self.cellMaze[y][x]
@@ -205,10 +226,11 @@ class Maze:
                 self.makePath(curCell.x, curCell.y, curCell.x, curCell.y + 1)
 
             # In case there weren't any new Cells, return, because the maze is done
-            if localContenders == []:
-                if globalContenders == []:
+            if not localContenders:
+                if not globalContenders:
                     return
-                # If there are still Cells left, but which aren't adjacent, fetch the one with the best probability attribute
+                # If there are still Cells left, but which aren't adjacent,
+                # fetch the one with the best probability attribute
                 # TODO: Adjust criteria to appear as you have a higher IQ
                 localBestContender = globalContenders[0]
                 for contender in globalContenders:
