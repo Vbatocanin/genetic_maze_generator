@@ -1,6 +1,7 @@
 import numpy as np
 import random
 import MazeHierarchy
+from tqdm import tqdm
 
 class Chromosome:
     def __init__(self, matrix, fitness):
@@ -132,7 +133,7 @@ class GeneticAlgorithm:
     def optimize(self):
         population = self.initial_population()
 
-        for i in range(0, self.max_iterations):
+        for i in tqdm(range(0, self.max_iterations)):
             selected = self.selection(population)
 
             population = self.create_generation(selected)
