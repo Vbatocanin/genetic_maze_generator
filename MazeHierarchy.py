@@ -236,7 +236,7 @@ class Maze:
                 # If there are still Cells left, but which aren't adjacent,
                 # fetch the one with the best probability attribute
 
-                localBestContender = max(globalContenders, key=lambda con: probMatrix[con.x][con.y])
+                localBestContender = max(globalContenders, key=lambda con: probMatrix[con.y][con.x])
                 globalContenders.remove(localBestContender)
                 # The next Cell to visit is already chosed
                 nextIsChosen = True
@@ -252,9 +252,9 @@ class Maze:
                     localBestContender = localContenders[0]
                     nextIsChosen = True
                     break
-                localBestContender = max(localContenders, key=lambda con: probMatrix[con.x][con.y])
+                localBestContender = max(localContenders, key=lambda con: probMatrix[con.y][con.x])
                 r = random.random()
-                if r < probMatrix[localBestContender.x][localBestContender.y]:
+                if r < probMatrix[localBestContender.y][localBestContender.x]:
                     nextIsChosen = True
                 else:
                     try:
