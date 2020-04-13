@@ -23,6 +23,9 @@ class GeneticAlgorithm:
         self.max_iterations = 1000
         self.mutation_rate = 0.1
         self.tournament_size = 10
+        self.log = open("log.txt", "a+")
+        self.log.truncate(0)
+        self.log.close()
 
         self.selection_type = 'tournament'
 
@@ -110,6 +113,7 @@ class GeneticAlgorithm:
 
         selected = []
 
+        # picking selection type based on a predefined variable
         for _ in range(self.reproduction_size):
             if self.selection_type == 'tournament':
                 selected.append(self.tournament_selection(chromosomes))
@@ -207,22 +211,26 @@ class GeneticAlgorithm:
         global_best_chromosome = None
 
         for _ in tqdm(range(0, self.max_iterations)):
+            self.log = open("log.txt", "a+")
+
             selected = self.selection(population)
 
             population = self.create_generation(selected)
 
             global_best_chromosome = max(population, key=lambda x: x.fitness)
 
-            # print(global_best_chromosome)
+            self.log.write(str(global_best_chromosome.matrix)+'\n\n')
 
             if global_best_chromosome.fitness == self.chromosome_size:
                 break
+
+            self.log.close()
 
         return global_best_chromosome
 
 
 def main():
-    genetic_algorithm = GeneticAlgorithm(9)
+    genetic_algorithm = GeneticAlgorithm(3)
     result = genetic_algorithm.optimize()
 
     print(result.matrix)
