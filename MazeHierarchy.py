@@ -40,8 +40,10 @@ class Maze:
         self.nRows = len(probMatrix)
 
         # Generation of start and exit node
-        [self.exitX, self.exitY] = self.generateEdge(self.nCols, self.nRows)
-        [self.startX, self.startY] = self.generateEdge(self.nCols, self.nRows)
+        # [self.exitX, self.exitY] = self.generateEdge(self.nCols, self.nRows)
+        [self.exitX, self.exitY] = [self.nCols - 1, 0]
+        # [self.startX, self.startY] = self.generateEdge(self.nCols, self.nRows)
+        [self.startX, self.startY] = [0, self.nRows - 1]
 
         # Re-generate start in case start and finish nodes are one and the same
         while [self.exitX, self.exitY] == [self.startX, self.startY]:
