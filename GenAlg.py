@@ -5,15 +5,14 @@ from tqdm import tqdm
 
 
 class Chromosome:
+    """ A class used to store chromosomes used in genetic algorithm. """
+
     def __init__(self, matrix, fitness):
         self.matrix = matrix
         self.fitness = fitness
 
     def __str__(self):
         return str(self.matrix)
-
-    def generate_maze(self):
-        pass
 
 
 class GeneticAlgorithm:
@@ -28,12 +27,13 @@ class GeneticAlgorithm:
         self.selection_type = 'tournament'
 
     def fitness_DFS(self, curr_cell, finish_cell):
-        """ calculates fitness """
+        """ Fully searches the maze to calculate several fitness-relataed values. """
 
         road_len = 0
         turns = 0
         steps_to_solution = 0
 
+        # if we've reached the finish cell, nothing more to do
         if curr_cell.x == finish_cell.x and curr_cell.y == finish_cell.y:
             return road_len, turns, steps_to_solution, True
 
@@ -42,14 +42,23 @@ class GeneticAlgorithm:
         total_steps_to_solution = 0
         final_solution_found = False
 
+        # for every unvisited neighbor
         for path in curr_cell.paths:
             if not path.visited:
                 path.visited = True
                 path.parent = curr_cell
+
+                # recoursive call
                 [road_len, turns, steps_to_solution, solution_found] = self.fitness_DFS(path, finish_cell)
-                total_steps_to_solution = total_steps_to_solution + steps_to_solution
+
+                # adding all steps the algorithm had to take to get to a solution
+                if not final_solution_found:
+                    total_steps_to_solution = total_steps_to_solution + steps_to_solution
+
+                # adding all the turns in the explored maze so far
                 total_turns = total_turns + turns
 
+                # if the current cell has a parent, check for turns and add them
                 if curr_cell.parent:
                     incoming_direction = MazeHierarchy.Maze.getDirection(curr_cell.parent, curr_cell)
                     outgoing_direction = MazeHierarchy.Maze.getDirection(curr_cell, path)
@@ -57,21 +66,24 @@ class GeneticAlgorithm:
                         if not MazeHierarchy.Maze.isDirectionOpposite(incoming_direction, outgoing_direction):
                             total_turns = total_turns + 1
 
+                # if the solution is found, this node is on the path to it, so add 1 to the path length
                 if solution_found:
                     total_road_len = road_len + 1
                     final_solution_found = True
 
+        # add a step for this node to the total number of steps it took to solve the maze
         total_steps_to_solution = total_steps_to_solution + 1
 
         return total_road_len, total_turns, total_steps_to_solution, final_solution_found
 
     def calculate_fitness(self, genetic_code):
+        """ Calculates the fitness of a given probability matrix. """
+
         maze = MazeHierarchy.Maze(genetic_code)
 
-        # TODO
-        # max off-road steps
-        # max number of turns
-        # max steps for algorithms to find solutions
+        # maximizing off-road steps
+        # maximizing number of turns
+        # maximizing steps for algorithms to find solutions
         maze.startCell.parent = None
         [road_len, turns, steps_to_solution, _] = self.fitness_DFS(maze.startCell, maze.finishCell)
 
@@ -82,6 +94,8 @@ class GeneticAlgorithm:
         return fitness_value
 
     def initial_population(self):
+        """ Initializes a random population of Chromosomes. """
+
         init_population = []
 
         for _ in range(self.generation_size):
@@ -92,6 +106,8 @@ class GeneticAlgorithm:
         return init_population
 
     def selection(self, chromosomes):
+        """ Selects a reproduction_size number of high-fitness Chromosomes. """
+
         selected = []
 
         for _ in range(self.reproduction_size):
@@ -103,6 +119,8 @@ class GeneticAlgorithm:
         return selected
 
     def roulette_selection(self, chromosomes):
+        """ Selects a Chromosome with a probability proportionate to its fitness. """
+
         total_fitness = sum([chromosome.fitness for chromosome in chromosomes])
 
         selected_value = random.randrange(0, total_fitness)
@@ -115,6 +133,8 @@ class GeneticAlgorithm:
                 return chromosomes[i]
 
     def tournament_selection(self, chromosomes):
+        """ Selects the best Chromosome from a random sample. """
+
         selected = random.sample(chromosomes, self.tournament_size)
 
         winner = max(selected, key=lambda x: x.fitness)
@@ -122,6 +142,8 @@ class GeneticAlgorithm:
         return winner
 
     def mutate(self, genetic_code):
+        """" Changes one probability in a chromosome. """
+
         random_value = random.random()
 
         if random_value < self.mutation_rate:
@@ -133,6 +155,8 @@ class GeneticAlgorithm:
         return genetic_code
 
     def create_generation(self, chromosomes):
+        """ Advances the evolution by one generaiton. """
+
         generation = []
         generation_size = 0
 
@@ -155,6 +179,9 @@ class GeneticAlgorithm:
         return generation
 
     def crossover(self, parent1, parent2):
+        """ Crosses over two probability matrices by separating them into quadrants
+        and switching two of the submatrices. """
+
         n = self.chromosome_size
         child1 = Chromosome(np.zeros((n, n)), 0)
         child2 = Chromosome(np.zeros((n, n)), 0)
@@ -174,6 +201,8 @@ class GeneticAlgorithm:
         return child1, child2
 
     def optimize(self):
+        """ Runs the genetic algorithm. """
+
         population = self.initial_population()
         global_best_chromosome = None
 
