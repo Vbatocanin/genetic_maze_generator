@@ -248,12 +248,11 @@ class Maze:
                 # In Case there are new adjacent Cells, find the best one with the given probability parameter
                 localBestContender = localContenders[0]
                 nextIsChosen = False
+
             # Take the current Cell with the probability from the probMatrix
             # If it misses on the first Cell, picks the next best cell according to prob parameter
             while not nextIsChosen:
-                for contender in localContenders:
-                    if probMatrix[localBestContender.x][localBestContender.y] < probMatrix[contender.x][contender.y]:
-                        localBestContender = contender
+                localBestContender = max(localContenders, key=lambda con: probMatrix[con.x][con.y])
                 r = random.random()
                 if r < probMatrix[localBestContender.x][localBestContender.y]:
                     nextIsChosen = True
