@@ -89,7 +89,7 @@ class Maze:
 
     def __str__(self):
 
-        # @ indicate a wall
+        # █ indicate a wall
         # Blank spaces indicate free space
 
         # List of lists which contain charaters, the coordinates correspond to the original maze
@@ -99,7 +99,7 @@ class Maze:
             stringMatrix.append([])
             for j in range(0, 2 * self.nCols + 1):
                 if i % 2 == 0 or j % 2 == 0:
-                    stringMatrix[i].append('@')
+                    stringMatrix[i].append('█')
                 else:
                     stringMatrix[i].append(' ')
 
