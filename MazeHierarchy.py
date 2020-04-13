@@ -206,24 +206,32 @@ class Maze:
             localContenders = []
 
             if (curCell.x != 0) and not self.isVisited(curCell.x - 1, curCell.y):
-                localContenders.append(self.getCell(curCell.x - 1, curCell.y))
+                tmpCell = self.getCell(curCell.x - 1, curCell.y)
+                localContenders.append(tmpCell)
                 # print("Making path from:", curCell.x, curCell.y, " To:", curCell.x - 1, curCell.y)
-                self.makePath(curCell.x, curCell.y, curCell.x - 1, curCell.y)
+                # self.makePath(curCell.x, curCell.y, curCell.x - 1, curCell.y)
+                tmpCell.setVisited(True)
 
             if (curCell.x != self.nCols - 1) and not self.isVisited(curCell.x + 1, curCell.y):
-                localContenders.append(self.getCell(curCell.x + 1, curCell.y))
+                tmpCell = self.getCell(curCell.x + 1, curCell.y)
+                localContenders.append(tmpCell)
                 # print("Making path from:", curCell.x, curCell.y, " To:", curCell.x + 1, curCell.y)
-                self.makePath(curCell.x, curCell.y, curCell.x + 1, curCell.y)
+                # self.makePath(curCell.x, curCell.y, curCell.x + 1, curCell.y)
+                tmpCell.setVisited(True)
 
             if (curCell.y != 0) and not self.isVisited(curCell.x, curCell.y - 1):
-                localContenders.append(self.getCell(curCell.x, curCell.y - 1))
+                tmpCell = self.getCell(curCell.x, curCell.y - 1)
+                localContenders.append(tmpCell)
                 # print("Making path from:", curCell.x, curCell.y, " To:", curCell.x, curCell.y - 1)
-                self.makePath(curCell.x, curCell.y, curCell.x, curCell.y - 1)
+                # self.makePath(curCell.x, curCell.y, curCell.x, curCell.y - 1)
+                tmpCell.setVisited(True)
 
             if (curCell.y != self.nRows - 1) and not self.isVisited(curCell.x, curCell.y + 1):
-                localContenders.append(self.getCell(curCell.x, curCell.y + 1))
+                tmpCell = self.getCell(curCell.x, curCell.y + 1)
+                localContenders.append(tmpCell)
                 # print("Making path from:", curCell.x, curCell.y, " To:", curCell.x, curCell.y + 1)
-                self.makePath(curCell.x, curCell.y, curCell.x, curCell.y + 1)
+                # self.makePath(curCell.x, curCell.y, curCell.x, curCell.y + 1)
+                tmpCell.setVisited(True)
 
             # In case there weren't any new Cells, return, because the maze is done
             if not localContenders:
@@ -260,6 +268,7 @@ class Maze:
                 globalContenders.extend(localContenders)
 
             # Mark the chosen best contender as visited
+            self.makePath(curCell.x,curCell.y,localBestContender.x,localBestContender.y)
             curCell = localBestContender
             curCell.setVisited(True)
             # print("Cur x,y :", localBestContender.x, ",", localBestContender.y)
