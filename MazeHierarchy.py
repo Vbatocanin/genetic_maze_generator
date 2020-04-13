@@ -232,10 +232,7 @@ class Maze:
                 # If there are still Cells left, but which aren't adjacent,
                 # fetch the one with the best probability attribute
                 # TODO: Adjust criteria to appear as you have a higher IQ
-                localBestContender = globalContenders[0]
-                for contender in globalContenders:
-                    if probMatrix[contender.x][contender.y] > probMatrix[localBestContender.x][localBestContender.y]:
-                        localBestContender = contender
+                localBestContender = max(globalContenders, key=lambda con: probMatrix[con.x][con.y])
                 globalContenders.remove(localBestContender)
                 # The next Cell to visit is already chosed
                 nextIsChosen = True
