@@ -210,28 +210,24 @@ class Maze:
                 localContenders.append(tmpCell)
                 # print("Making path from:", curCell.x, curCell.y, " To:", curCell.x - 1, curCell.y)
                 # self.makePath(curCell.x, curCell.y, curCell.x - 1, curCell.y)
-                tmpCell.setVisited(True)
 
             if (curCell.x != self.nCols - 1) and not self.isVisited(curCell.x + 1, curCell.y):
                 tmpCell = self.getCell(curCell.x + 1, curCell.y)
                 localContenders.append(tmpCell)
                 # print("Making path from:", curCell.x, curCell.y, " To:", curCell.x + 1, curCell.y)
                 # self.makePath(curCell.x, curCell.y, curCell.x + 1, curCell.y)
-                tmpCell.setVisited(True)
 
             if (curCell.y != 0) and not self.isVisited(curCell.x, curCell.y - 1):
                 tmpCell = self.getCell(curCell.x, curCell.y - 1)
                 localContenders.append(tmpCell)
                 # print("Making path from:", curCell.x, curCell.y, " To:", curCell.x, curCell.y - 1)
                 # self.makePath(curCell.x, curCell.y, curCell.x, curCell.y - 1)
-                tmpCell.setVisited(True)
 
             if (curCell.y != self.nRows - 1) and not self.isVisited(curCell.x, curCell.y + 1):
                 tmpCell = self.getCell(curCell.x, curCell.y + 1)
                 localContenders.append(tmpCell)
                 # print("Making path from:", curCell.x, curCell.y, " To:", curCell.x, curCell.y + 1)
                 # self.makePath(curCell.x, curCell.y, curCell.x, curCell.y + 1)
-                tmpCell.setVisited(True)
 
             # In case there weren't any new Cells, return, because the maze is done
             if not localContenders:
@@ -239,7 +235,7 @@ class Maze:
                     return
                 # If there are still Cells left, but which aren't adjacent,
                 # fetch the one with the best probability attribute
-                # TODO: Adjust criteria to appear as you have a higher IQ
+
                 localBestContender = max(globalContenders, key=lambda con: probMatrix[con.x][con.y])
                 globalContenders.remove(localBestContender)
                 # The next Cell to visit is already chosed
@@ -252,6 +248,10 @@ class Maze:
             # Take the current Cell with the probability from the probMatrix
             # If it misses on the first Cell, picks the next best cell according to prob parameter
             while not nextIsChosen:
+                if len(localContenders) == 1:
+                    localBestContender = localContenders[0]
+                    nextIsChosen = True
+                    break
                 localBestContender = max(localContenders, key=lambda con: probMatrix[con.x][con.y])
                 r = random.random()
                 if r < probMatrix[localBestContender.x][localBestContender.y]:
