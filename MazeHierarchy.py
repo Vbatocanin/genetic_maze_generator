@@ -2,6 +2,7 @@ import numpy as np
 import GenAlg
 import random
 from enum import Enum
+from random import shuffle
 
 
 class Direction(Enum):
@@ -10,8 +11,6 @@ class Direction(Enum):
     LEFT = 2
     RIGHT = 3
     NO_DIRECTION = 4
-    def opposite_direction(self):
-        pass
 
 
 class Cell:
@@ -65,6 +64,7 @@ class Maze:
         for row in self.cellMaze:
             for cell in row:
                 cell.setVisited(False)
+                shuffle(cell.paths)
 
     # Generates the coordiantes for an edge Cell, which is only used for the start and finish cells
     def generateEdge(self, nCols, nRows):
