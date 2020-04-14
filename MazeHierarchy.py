@@ -204,7 +204,7 @@ class Maze:
 
         # This while loop adds potetial contenders which are adjacent to the current Cell
         while True:
-
+            didGlobalSearch = False
             localContenders = []
 
             if (curCell.x != 0) and not self.isVisited(curCell.x - 1, curCell.y):
@@ -212,6 +212,7 @@ class Maze:
                 localContenders.append(tmpCell)
                 # print("Making path from:", curCell.x, curCell.y, " To:", curCell.x - 1, curCell.y)
                 self.setParent(curCell.x, curCell.y, curCell.x - 1, curCell.y)
+
 
             if (curCell.x != self.nCols - 1) and not self.isVisited(curCell.x + 1, curCell.y):
                 tmpCell = self.getCell(curCell.x + 1, curCell.y)
@@ -233,6 +234,7 @@ class Maze:
 
             # In case there weren't any new Cells, return, because the maze is done
             if not localContenders:
+                didGlobalSearch = True
                 if not globalContenders:
                     return
                 # If there are still Cells left, but which aren't adjacent,
@@ -258,8 +260,10 @@ class Maze:
                 r = random.random()
                 if r < probMatrix[localBestContender.y][localBestContender.x]:
                     nextIsChosen = True
+                    localContenders.remove(localBestContender)
                 else:
                     try:
+                        globalContenders.append(localBestContender)
                         localContenders.remove(localBestContender)
                     except ValueError:
                         pass
@@ -267,10 +271,10 @@ class Maze:
             # Adds the unused Cells to the global list, which accumulates all the not-currently-adjacent Cells
             if localContenders:
                 globalContenders.extend(localContenders)
+            if didGlobalSearch:
                 curCell = localBestContender.parent
 
             # Mark the chosen best contender as visited
-
             self.makePath(curCell.x,curCell.y,localBestContender.x,localBestContender.y)
             curCell = localBestContender
             curCell.setVisited(True)

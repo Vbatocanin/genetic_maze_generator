@@ -230,7 +230,7 @@ class GeneticAlgorithm:
 
 
 def main():
-    genetic_algorithm = GeneticAlgorithm(3)
+    genetic_algorithm = GeneticAlgorithm(8)
     result = genetic_algorithm.optimize()
 
     print(result.matrix)
