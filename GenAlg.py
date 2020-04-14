@@ -210,8 +210,8 @@ class GeneticAlgorithm:
                     child1.matrix[i, j] = parent2.matrix[i, j]
                     child2.matrix[i, j] = parent1.matrix[i, j]
 
-        child1.fitness = self.calculate_fitness(child1.matrix)
-        child2.fitness = self.calculate_fitness(child2.matrix)
+        # child1.fitness = self.calculate_fitness(child1.matrix)
+        # child2.fitness = self.calculate_fitness(child2.matrix)
 
         return child1, child2
 
