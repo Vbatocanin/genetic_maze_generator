@@ -18,11 +18,13 @@ def main():
         row = row.split(' ')
         row = [element for element in row if element]
         mat_row = [float(num) for num in row]
-        print(mat_row)
         if mat_row != []:
             matrix.append(mat_row)
 
-    print(matrix)
+    for row in matrix:
+        print(row)
+
+    print("\n\n")
 
     maze = Maze(matrix)
 
