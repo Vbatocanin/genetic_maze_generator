@@ -139,7 +139,7 @@ class Maze:
         # Final string generatrion
         finalString = ""
         for charList in stringMatrix:
-            finalString += "".join(charList) + "\n"
+            finalString += "  " + "".join(charList) + "\n"
         return finalString
 
     # A function that return the direction in which you need to go
