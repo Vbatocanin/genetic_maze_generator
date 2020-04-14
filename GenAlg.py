@@ -29,7 +29,7 @@ class GeneticAlgorithm:
 
         self.selection_type = 'tournament'
 
-    def fitness_DFS(self, curr_cell, finish_cell):
+    def fitness_A_star(self, curr_cell, finish_cell):
         """ Fully searches the maze to calculate several fitness-relataed values. """
 
         road_len = 0
@@ -46,13 +46,15 @@ class GeneticAlgorithm:
         final_solution_found = False
 
         # for every unvisited neighbor
-        for path in curr_cell.paths:
+        sorted_neighbors = sorted(curr_cell.paths, key=lambda cell: abs(cell.x - finish_cell.x) + abs(cell.y - finish_cell.y))
+
+        for path in sorted_neighbors:
             if not path.visited:
                 path.visited = True
                 path.parent = curr_cell
 
                 # recoursive call
-                [road_len, turns, steps_to_solution, solution_found] = self.fitness_DFS(path, finish_cell)
+                [road_len, turns, steps_to_solution, solution_found] = self.fitness_A_star(path, finish_cell)
 
                 # adding all steps the algorithm had to take to get to a solution
                 if not final_solution_found:
@@ -88,7 +90,7 @@ class GeneticAlgorithm:
         # maximizing number of turns
         # maximizing steps for algorithms to find solutions
         maze.startCell.parent = None
-        [road_len, turns, steps_to_solution, _] = self.fitness_DFS(maze.startCell, maze.finishCell)
+        [road_len, turns, steps_to_solution, _] = self.fitness_A_star(maze.startCell, maze.finishCell)
 
         off_road_steps = self.chromosome_size ** 2 - road_len
 
