@@ -92,7 +92,7 @@ class GeneticAlgorithm:
 
         off_road_steps = self.chromosome_size ** 2 - road_len
 
-        fitness_value = off_road_steps + turns + steps_to_solution
+        fitness_value = 0.8*off_road_steps + turns + steps_to_solution
 
         return fitness_value
 
@@ -151,10 +151,21 @@ class GeneticAlgorithm:
         random_value = random.random()
 
         if random_value < self.mutation_rate:
-            random_i = random.randrange(self.chromosome_size)
-            random_j = random.randrange(self.chromosome_size)
+            random_i1 = random.randrange(self.chromosome_size)
+            random_j1 = random.randrange(self.chromosome_size)
 
-            genetic_code.matrix[random_i][random_j] = np.random.rand()
+            random_i2 = random.randrange(self.chromosome_size)
+            random_j2 = random.randrange(self.chromosome_size)
+
+            if random_i1 > random_i2:
+                random_i1, random_i2 = random_i2, random_i1
+
+            if random_j1 > random_j2:
+                random_j1, random_j2 = random_j2, random_j1
+
+            for i in range(random_i1, random_i2):
+                for j in range(random_j1, random_j2):
+                    genetic_code.matrix[i][j] = np.random.rand()
 
         return genetic_code
 
