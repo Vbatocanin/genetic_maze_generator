@@ -1,11 +1,7 @@
 from MazeHierarchy import *
 from DisplayRandomMaze import *
 
-def main():
-    f = open('log.txt', "r")
-    contents = f.read()
-    f.close()
-
+def parse_log(contents):
     last_matrix = contents.split('\n\n')[-2]
 
     rows = last_matrix.split(']')
@@ -20,6 +16,15 @@ def main():
         mat_row = [float(num) for num in row]
         if mat_row != []:
             matrix.append(mat_row)
+
+    return matrix
+
+def main():
+    f = open('logs/log2.txt', "r")
+    contents = f.read()
+    f.close()
+
+    matrix = parse_log(contents)
 
     fit = calculate_fitness(matrix)
 
