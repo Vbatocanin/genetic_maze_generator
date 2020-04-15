@@ -35,39 +35,39 @@ class Maze:
     def __init__(self, probMatrix):
 
         # Maze dimensions, in case a non-square maze is given as input
-        self.nCols = len(probMatrix[0])
-        self.nRows = len(probMatrix)
+        self.n_cols = len(probMatrix[0])
+        self.n_rows = len(probMatrix)
 
         # Generation of start and exit node
         # [self.exitX, self.exitY] = self.generateEdge(self.nCols, self.nRows)
-        [self.exitX, self.exitY] = [self.nCols - 1, 0]
+        [self.exit_x, self.exit_y] = [self.n_cols - 1, 0]
         # [self.startX, self.startY] = self.generateEdge(self.nCols, self.nRows)
-        [self.startX, self.startY] = [0, self.nRows - 1]
+        [self.start_x, self.start_y] = [0, self.n_rows - 1]
 
         # Re-generate start in case start and finish nodes are one and the same
-        while [self.exitX, self.exitY] == [self.startX, self.startY]:
-            [self.startX, self.startY] = self.generateEdge(self.nCols, self.nRows)
+        while [self.exit_x, self.exit_y] == [self.start_x, self.start_y]:
+            [self.start_x, self.start_y] = self.generate_edge(self.n_cols, self.n_rows)
 
         # cellMaze is a list of lists which contains Cell objects in the same order as the prob matrix
-        self.cellMaze = []
+        self.cell_maze = []
 
         # Initialization of complete maze
-        for i in range(0, self.nRows):
-            self.cellMaze.append([])
-            for j in range(0, self.nCols):
-                self.cellMaze[i].append(Cell(j, i))
+        for i in range(0, self.n_rows):
+            self.cell_maze.append([])
+            for j in range(0, self.n_cols):
+                self.cell_maze[i].append(Cell(j, i))
 
-        self.startCell = self.getCell(self.startX, self.startY)
-        self.finishCell = self.getCell(self.exitX, self.exitY)
-        self.generateMaze(probMatrix)
+        self.start_cell = self.get_cell(self.start_x, self.start_y)
+        self.finish_cell = self.get_cell(self.exit_x, self.exit_y)
+        self.generate_maze(probMatrix)
 
-        for row in self.cellMaze:
+        for row in self.cell_maze:
             for cell in row:
                 cell.setVisited(False)
                 shuffle(cell.paths)
 
     # Generates the coordiantes for an edge Cell, which is only used for the start and finish cells
-    def generateEdge(self, nCols, nRows):
+    def generate_edge(self, n_cols, n_rows):
         # Chance of it being on the left-right or the up-down edges
         p = 0.5
         r = random.randint(0, 1)
@@ -75,79 +75,78 @@ class Maze:
             # Same princible, just for left or right
             r = random.randint(0, 1)
             if r < p:
-                return [nCols - 1, random.randint(0, nRows - 1)]
+                return [n_cols - 1, random.randint(0, n_rows - 1)]
             else:
-                return [0, random.randint(0, nRows - 1)]
+                return [0, random.randint(0, n_rows - 1)]
         else:
             # Same princible, just for up or down
             r = random.randint(0, 1)
             if r < p:
-                return [random.randint(0, nCols - 1), nRows - 1]
+                return [random.randint(0, n_cols - 1), n_rows - 1]
             else:
-                return [random.randint(0, nCols - 1), 0]
-
+                return [random.randint(0, n_cols - 1), 0]
 
     def __str__(self):
 
         # █ indicate a wall
         # Blank spaces indicate free space
 
-        # List of lists which contain charaters, the coordinates correspond to the original maze
+        # List of lists which contain characters, the coordinates correspond to the original maze
         # but with padding, which means (stringMatrixX, stringMatrixY) -> (mazeX * 2 + 1, mazeY * 2 + 1)
-        stringMatrix = []
-        for i in range(0, 2 * self.nRows + 1):
-            stringMatrix.append([])
-            for j in range(0, 2 * self.nCols + 1):
+        string_matrix = []
+        for i in range(0, 2 * self.n_rows + 1):
+            string_matrix.append([])
+            for j in range(0, 2 * self.n_cols + 1):
                 if i % 2 == 0 or j % 2 == 0:
-                    stringMatrix[i].append('█')
+                    string_matrix[i].append('█')
                 else:
-                    stringMatrix[i].append(' ')
+                    string_matrix[i].append(' ')
 
         # Adding a blank space as an entrance to the maze
-        if self.startX == 0:
-            stringMatrix[self.startY * 2 + 1][self.startX * 2] = ' '
-        elif self.startY == 0:
-            stringMatrix[self.startY * 2][self.startX * 2 + 1] = ' '
-        elif self.startX == self.nCols - 1:
-            stringMatrix[self.startY * 2 + 1][self.startX * 2 + 2] = ' '
-        elif self.startY == self.nRows - 1:
-            stringMatrix[self.startY * 2 + 2][self.startX * 2 + 1] = ' '
+        if self.start_x == 0:
+            string_matrix[self.start_y * 2 + 1][self.start_x * 2] = ' '
+        elif self.start_y == 0:
+            string_matrix[self.start_y * 2][self.start_x * 2 + 1] = ' '
+        elif self.start_x == self.n_cols - 1:
+            string_matrix[self.start_y * 2 + 1][self.start_x * 2 + 2] = ' '
+        elif self.start_y == self.n_rows - 1:
+            string_matrix[self.start_y * 2 + 2][self.start_x * 2 + 1] = ' '
 
         # Adding a blank space as an exit from the maze
-        if self.exitX == 0:
-            stringMatrix[self.exitY * 2 + 1][self.exitX * 2] = ' '
-        elif self.exitY == 0:
-            stringMatrix[self.exitY * 2][self.exitX * 2 + 1] = ' '
-        elif self.exitX == self.nCols - 1:
-            stringMatrix[self.exitY * 2 + 1][self.exitX * 2 + 2] = ' '
-        elif self.exitY == self.nRows - 1:
-            stringMatrix[self.exitY * 2 + 2][self.exitX * 2 + 1] = ' '
+        if self.exit_x == 0:
+            string_matrix[self.exit_y * 2 + 1][self.exit_x * 2] = ' '
+        elif self.exit_y == 0:
+            string_matrix[self.exit_y * 2][self.exit_x * 2 + 1] = ' '
+        elif self.exit_x == self.n_cols - 1:
+            string_matrix[self.exit_y * 2 + 1][self.exit_x * 2 + 2] = ' '
+        elif self.exit_y == self.n_rows - 1:
+            string_matrix[self.exit_y * 2 + 2][self.exit_x * 2 + 1] = ' '
 
         # Drawing the actual hallways from Cell to Cell
-        for row in self.cellMaze:
+        for row in self.cell_maze:
             for cell in row:
                 curX = 2 * cell.x + 1
                 curY = 2 * cell.y + 1
 
                 for neighbor in cell.paths:
-                    tmpDirection = self.getDirection(cell, neighbor)
-                    if tmpDirection == Direction.UP:
-                        stringMatrix[curY - 1][curX] = ' '
-                    elif tmpDirection == Direction.LEFT:
-                        stringMatrix[curY][curX - 1] = ' '
+                    tmp_direction = self.get_direction(cell, neighbor)
+                    if tmp_direction == Direction.UP:
+                        string_matrix[curY - 1][curX] = ' '
+                    elif tmp_direction == Direction.LEFT:
+                        string_matrix[curY][curX - 1] = ' '
 
         # Final string generatrion
-        finalString = ""
-        for charList in stringMatrix:
-            finalString += "  " + "".join(charList) + "\n"
-        return finalString
+        final_string = ""
+        for char_list in string_matrix:
+            final_string += "  " + "".join(char_list) + "\n"
+        return final_string
 
     # A function that return the direction in which you need to go
     # in order to go from fromCell to toCell
     @staticmethod
-    def getDirection(fromCell, toCell):
-        diffx = toCell.x - fromCell.x
-        diffy = toCell.y - fromCell.y
+    def get_direction(from_cell, to_cell):
+        diffx = to_cell.x - from_cell.x
+        diffy = to_cell.y - from_cell.y
 
         if diffy == 0:
             if diffx == 1:
@@ -162,7 +161,7 @@ class Maze:
         return Direction.NO_DIRECTION
 
     @staticmethod
-    def isDirectionOpposite(dir1, dir2):
+    def is_direction_opposite(dir1, dir2):
         if dir1 == Direction.UP and dir2 == Direction.DOWN:
             return True
         elif dir1 == Direction.DOWN and dir2 == Direction.UP:
@@ -174,123 +173,124 @@ class Maze:
         else:
             return False
 
-    def getCell(self, x, y):
-        return self.cellMaze[y][x]
+    def get_cell(self, x, y):
+        return self.cell_maze[y][x]
 
-    def isVisited(self, i, j):
-        return self.cellMaze[j][i].visited
+    def is_visited(self, i, j):
+        return self.cell_maze[j][i].visited
+
 
     # Makes a path from parentCell to childCell according
     # to their coordinates
-    def makePath(self, parentX, parentY, childX, childY):
-        child = self.getCell(childX, childY)
-        parent = self.getCell(parentX, parentY)
+    def make_path(self, parent_x, parent_y, child_x, child_y):
+        child = self.get_cell(child_x, child_y)
+        parent = self.get_cell(parent_x, parent_y)
         child.parent = parent
         child.setVisited(True)
         parent.paths.append(child)
         child.paths.append(parent)
 
-    def generateMaze(self, probMatrix):
+    def generate_maze(self, prob_matrix):
         # Generation of maze entrance
         # print("Maze dimensions:", self.nCols, "x", self.nRows)
         # print("Starting from cell:", self.startCell.x, ",", self.startCell.y)
         # Initialization of current position
-        self.startCell.setVisited(True)
-        curCell = self.startCell
+        self.start_cell.setVisited(True)
+        cur_cell = self.start_cell
 
         # List of contenders that are not initially optimal but will be chosen after the fact
         # when the current cell is cornered
-        globalContenders = []
+        global_contenders = []
 
         # This while loop adds potetial contenders which are adjacent to the current Cell
         while True:
-            didGlobalSearch = False
-            localContenders = []
+            did_global_search = False
+            local_contenders = []
 
-            if (curCell.x != 0) and not self.isVisited(curCell.x - 1, curCell.y):
-                tmpCell = self.getCell(curCell.x - 1, curCell.y)
-                localContenders.append(tmpCell)
-                # print("Making path from:", curCell.x, curCell.y, " To:", curCell.x - 1, curCell.y)
-                self.setParent(curCell.x, curCell.y, curCell.x - 1, curCell.y)
+            if (cur_cell.x != 0) and not self.is_visited(cur_cell.x - 1, cur_cell.y):
+                tmp_cell = self.get_cell(cur_cell.x - 1, cur_cell.y)
+                local_contenders.append(tmp_cell)
+                # print("Making path from:", cur_cell.x, cur_cell.y, " To:", cur_cell.x - 1, cur_cell.y)
+                self.set_parent(cur_cell.x, cur_cell.y, cur_cell.x - 1, cur_cell.y)
 
 
-            if (curCell.x != self.nCols - 1) and not self.isVisited(curCell.x + 1, curCell.y):
-                tmpCell = self.getCell(curCell.x + 1, curCell.y)
-                localContenders.append(tmpCell)
-                # print("Making path from:", curCell.x, curCell.y, " To:", curCell.x + 1, curCell.y)
-                self.setParent(curCell.x, curCell.y, curCell.x + 1, curCell.y)
+            if (cur_cell.x != self.n_cols - 1) and not self.is_visited(cur_cell.x + 1, cur_cell.y):
+                tmp_cell = self.get_cell(cur_cell.x + 1, cur_cell.y)
+                local_contenders.append(tmp_cell)
+                # print("Making path from:", cur_cell.x, cur_cell.y, " To:", cur_cell.x + 1, cur_cell.y)
+                self.set_parent(cur_cell.x, cur_cell.y, cur_cell.x + 1, cur_cell.y)
 
-            if (curCell.y != 0) and not self.isVisited(curCell.x, curCell.y - 1):
-                tmpCell = self.getCell(curCell.x, curCell.y - 1)
-                localContenders.append(tmpCell)
-                # print("Making path from:", curCell.x, curCell.y, " To:", curCell.x, curCell.y - 1)
-                self.setParent(curCell.x, curCell.y, curCell.x, curCell.y - 1)
+            if (cur_cell.y != 0) and not self.is_visited(cur_cell.x, cur_cell.y - 1):
+                tmp_cell = self.get_cell(cur_cell.x, cur_cell.y - 1)
+                local_contenders.append(tmp_cell)
+                # print("Making path from:", cur_cell.x, cur_cell.y, " To:", cur_cell.x, cur_cell.y - 1)
+                self.set_parent(cur_cell.x, cur_cell.y, cur_cell.x, cur_cell.y - 1)
 
-            if (curCell.y != self.nRows - 1) and not self.isVisited(curCell.x, curCell.y + 1):
-                tmpCell = self.getCell(curCell.x, curCell.y + 1)
-                localContenders.append(tmpCell)
-                # print("Making path from:", curCell.x, curCell.y, " To:", curCell.x, curCell.y + 1)
-                self.setParent(curCell.x, curCell.y, curCell.x, curCell.y + 1)
+            if (cur_cell.y != self.n_rows - 1) and not self.is_visited(cur_cell.x, cur_cell.y + 1):
+                tmp_cell = self.get_cell(cur_cell.x, cur_cell.y + 1)
+                local_contenders.append(tmp_cell)
+                # print("Making path from:", cur_cell.x, cur_cell.y, " To:", cur_cell.x, cur_cell.y + 1)
+                self.set_parent(cur_cell.x, cur_cell.y, cur_cell.x, cur_cell.y + 1)
 
             # In case there weren't any new Cells, return, because the maze is done
-            if not localContenders:
-                didGlobalSearch = True
-                if not globalContenders:
+            if not local_contenders:
+                did_global_search = True
+                if not global_contenders:
                     return
                 # If there are still Cells left, but which aren't adjacent,
                 # fetch the one with the best probability attribute
 
-                localBestContender = max(globalContenders, key=lambda con: probMatrix[con.y][con.x])
-                globalContenders.remove(localBestContender)
+                localBestContender = max(global_contenders, key=lambda con: prob_matrix[con.y][con.x])
+                global_contenders.remove(localBestContender)
                 # The next Cell to visit is already chosed
-                nextIsChosen = True
+                next_is_chosen = True
             else:
                 # In Case there are new adjacent Cells, find the best one with the given probability parameter
-                localBestContender = localContenders[0]
-                nextIsChosen = False
+                localBestContender = local_contenders[0]
+                next_is_chosen = False
 
             # Take the current Cell with the probability from the probMatrix
             # If it misses on the first Cell, picks the next best cell according to prob parameter
-            while not nextIsChosen:
-                if len(localContenders) == 1:
-                    localBestContender = localContenders[0]
-                    nextIsChosen = True
+            while not next_is_chosen:
+                if len(local_contenders) == 1:
+                    localBestContender = local_contenders[0]
+                    next_is_chosen = True
                     break
-                localBestContender = max(localContenders, key=lambda con: probMatrix[con.y][con.x])
+                localBestContender = max(local_contenders, key=lambda con: prob_matrix[con.y][con.x])
                 r = random.random()
-                if r < probMatrix[localBestContender.y][localBestContender.x]:
-                    nextIsChosen = True
-                    localContenders.remove(localBestContender)
+                if r < prob_matrix[localBestContender.y][localBestContender.x]:
+                    next_is_chosen = True
+                    local_contenders.remove(localBestContender)
                 else:
                     try:
-                        globalContenders.append(localBestContender)
-                        localContenders.remove(localBestContender)
+                        global_contenders.append(localBestContender)
+                        local_contenders.remove(localBestContender)
                     except ValueError:
                         pass
 
             # Adds the unused Cells to the global list, which accumulates all the not-currently-adjacent Cells
-            if localContenders:
-                globalContenders.extend(localContenders)
-            if didGlobalSearch:
-                curCell = localBestContender.parent
+            if local_contenders:
+                global_contenders.extend(local_contenders)
+            if did_global_search:
+                cur_cell = localBestContender.parent
 
             # Mark the chosen best contender as visited
-            self.makePath(curCell.x,curCell.y,localBestContender.x,localBestContender.y)
-            curCell = localBestContender
-            curCell.setVisited(True)
+            self.make_path(cur_cell.x, cur_cell.y, localBestContender.x, localBestContender.y)
+            cur_cell = localBestContender
+            cur_cell.setVisited(True)
             # print("Cur x,y :", localBestContender.x, ",", localBestContender.y)
 
-    def setParent(self, parentX, parentY, childX, childY):
-        child = self.getCell(childX, childY)
-        parent = self.getCell(parentX, parentY)
+    def set_parent(self, parent_x, parent_y, child_x, child_y):
+        child = self.get_cell(child_x, child_y)
+        parent = self.get_cell(parent_x, parent_y)
         child.parent = parent
 
 
 
 def main():
-    probMatrixExample = [[0.4, 0.1, 0.2], [0.6, 0.2, 0.26], [0.42, 0.31, 0.52]]
-    mazeExample = Maze(probMatrixExample)
-    print(mazeExample)
+    prob_matrix_example = [[0.4, 0.1, 0.2], [0.6, 0.2, 0.26], [0.42, 0.31, 0.52]]
+    maze_example = Maze(prob_matrix_example)
+    print(maze_example)
     print("Done")
 
 
