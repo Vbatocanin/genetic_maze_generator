@@ -1,5 +1,5 @@
 from MazeHierarchy import *
-
+from DisplayRandomMaze import *
 
 def main():
     f = open('log.txt', "r")
@@ -21,8 +21,12 @@ def main():
         if mat_row != []:
             matrix.append(mat_row)
 
-    for row in matrix:
-        print(row)
+    fit = calculate_fitness(matrix)
+
+    print("\n  Fitness: " + str(fit))
+
+    #for row in matrix:
+    #    print(row)
 
     print("\n\n")
 
