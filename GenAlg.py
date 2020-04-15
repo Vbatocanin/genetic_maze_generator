@@ -65,10 +65,10 @@ class GeneticAlgorithm:
 
                 # if the current cell has a parent, check for turns and add them
                 if curr_cell.parent:
-                    incoming_direction = MazeHierarchy.Maze.getDirection(curr_cell.parent, curr_cell)
-                    outgoing_direction = MazeHierarchy.Maze.getDirection(curr_cell, path)
+                    incoming_direction = MazeHierarchy.Maze.get_direction(curr_cell.parent, curr_cell)
+                    outgoing_direction = MazeHierarchy.Maze.get_direction(curr_cell, path)
                     if incoming_direction != outgoing_direction:
-                        if not MazeHierarchy.Maze.isDirectionOpposite(incoming_direction, outgoing_direction):
+                        if not MazeHierarchy.Maze.is_direction_opposite(incoming_direction, outgoing_direction):
                             total_turns = total_turns + 1
 
                 # if the solution is found, this node is on the path to it, so add 1 to the path length
@@ -89,8 +89,8 @@ class GeneticAlgorithm:
         # maximizing off-road steps
         # maximizing number of turns
         # maximizing steps for algorithms to find solutions
-        maze.startCell.parent = None
-        [road_len, turns, steps_to_solution, _] = self.fitness_A_star(maze.startCell, maze.finishCell)
+        maze.start_cell.parent = None
+        [road_len, turns, steps_to_solution, _] = self.fitness_A_star(maze.start_cell, maze.finish_cell)
 
         off_road_steps = self.chromosome_size ** 2 - road_len
 
@@ -243,7 +243,7 @@ class GeneticAlgorithm:
 
 
 def main():
-    genetic_algorithm = GeneticAlgorithm(8)
+    genetic_algorithm = GeneticAlgorithm(12)
     result = genetic_algorithm.optimize()
 
     print(result.matrix)
