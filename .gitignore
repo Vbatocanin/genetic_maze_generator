@@ -8,3 +8,6 @@
 __pycache__/MazeHierarchy.cpython-37.pyc
 __pycache__/GenAlg.cpython-37.pyc
 .idea/other.xml
+.idea/workspace.xml
+__pycache__/DisplayRandomMaze.cpython-37.pyc
+__pycache__/DisplayResult.cpython-37.pyc
