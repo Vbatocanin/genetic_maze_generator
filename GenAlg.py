@@ -17,10 +17,10 @@ class Chromosome:
 
 class GeneticAlgorithm:
     def __init__(self, n):
-        self.generation_size = 5000
+        self.generation_size = 500
         self.chromosome_size = n  # maze size (n x n)
-        self.reproduction_size = 1000
-        self.max_iterations = 1000
+        self.reproduction_size = 100
+        self.max_iterations = 15
         self.mutation_rate = 0.1
         self.tournament_size = 10
         self.log = open("log.txt", "a+")
@@ -94,7 +94,7 @@ class GeneticAlgorithm:
 
         off_road_steps = self.chromosome_size ** 2 - road_len
 
-        fitness_value = 0.8*off_road_steps + turns + steps_to_solution
+        fitness_value = 0.7*off_road_steps + turns + steps_to_solution
 
         return fitness_value
 
@@ -243,7 +243,7 @@ class GeneticAlgorithm:
 
 
 def main():
-    genetic_algorithm = GeneticAlgorithm(12)
+    genetic_algorithm = GeneticAlgorithm(8)
     result = genetic_algorithm.optimize()
 
     print(result.matrix)

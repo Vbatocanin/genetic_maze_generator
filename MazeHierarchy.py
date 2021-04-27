@@ -18,7 +18,6 @@ class Cell:
         self.x = x
         self.y = y
 
-        # TODO: Potentially remove parent because it's not used atm
         self.parent = None
 
         # Works exactly like a graph adjacency list
@@ -202,7 +201,7 @@ class Maze:
         # when the current cell is cornered
         global_contenders = []
 
-        # This while loop adds potetial contenders which are adjacent to the current Cell
+        # This while loop adds potential contenders which are adjacent to the current Cell
         while True:
             did_global_search = False
             local_contenders = []

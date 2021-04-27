@@ -20,7 +20,7 @@ def parse_log(contents):
     return matrix
 
 def main():
-    f = open('logs/log2.txt', "r")
+    f = open('logs/log.txt', "r")
     contents = f.read()
     f.close()
 
